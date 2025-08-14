@@ -1,0 +1,48 @@
+{
+  "name": "pos-server",
+  "version": "1.0.0",
+  "description": "Robust POS system backend with AI image generation",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "node prisma/seed.js",
+    "db:reset": "prisma db push --force-reset && npm run db:seed"
+  },
+  "keywords": [
+    "pos",
+    "point-of-sale",
+    "inventory",
+    "ai",
+    "ecommerce"
+  ],
+  "author": "POS Development Team",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.14.0",
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "joi": "^18.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.14.0",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "jest": "^30.0.5",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  }
+}

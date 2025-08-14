@@ -1,0 +1,41 @@
+{
+  "name": "mindware-pos",
+  "version": "1.0.0",
+  "description": "Advanced POS SaaS with AI-powered fraud detection and comprehensive billing system",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && next dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "cd frontend && next build",
+    "start": "cd frontend && next start",
+    "lint": "cd frontend && next lint",
+    "db:migrate": "cd backend && npm run db:migrate",
+    "db:seed": "cd backend && npm run db:seed",
+    "install:all": "npm install && cd backend && npm install && cd frontend && npm install"
+  },
+  "dependencies": {
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "next": "^14.2.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "14.0.4"
+  },
+  "keywords": [
+    "pos",
+    "billing",
+    "retail",
+    "saas",
+    "ai",
+    "fraud-detection"
+  ],
+  "author": "Mindware Team",
+  "license": "MIT"
+}

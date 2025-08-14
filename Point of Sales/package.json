@@ -1,0 +1,49 @@
+{
+  "name": "pos-app",
+  "version": "1.0.0",
+  "description": "Full-stack POS system with AI image generation",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "test": "concurrently \"npm run test:server\" \"npm run test:client\"",
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "db:generate": "cd server && npm run db:generate",
+    "db:push": "cd server && npm run db:push",
+    "db:migrate": "cd server && npm run db:migrate",
+    "db:studio": "cd server && npm run db:studio",
+    "start": "cd server && npm start",
+    "clean": "rimraf node_modules client/node_modules server/node_modules client/build server/logs/*.log",
+    "setup": "npm run install:all && npm run db:generate && npm run db:push"
+  },
+  "keywords": [
+    "pos",
+    "point-of-sale",
+    "inventory",
+    "ai",
+    "ecommerce",
+    "react",
+    "nodejs",
+    "express",
+    "sqlite",
+    "prisma"
+  ],
+  "author": "POS Development Team",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}

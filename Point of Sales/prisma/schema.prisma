@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role     @default(STAFF)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sales      Sale[]
+  purchases  Purchase[]
+  inventory  InventoryLog[]
+  customers  Customer[]
+  suppliers  Supplier[]
+
+  @@map("users")
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  loyaltyPoints Int    @default(0)
+  totalSpent  Float   @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  sales Sale[]
+
+  @@map("customers")
+}
+
+model Supplier {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  contactPerson String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  products Product[]
+  purchases Purchase[]
+
+  @@map("suppliers")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  sku         String   @unique
+  barcode     String?  @unique
+  price       Float
+  costPrice   Float
+  stockQuantity Int
+  minStockLevel Int    @default(10)
+  maxStockLevel Int?
+  imageUrl    String?
+  aiGeneratedImageUrl String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id])
+  saleItems  SaleItem[]
+  purchaseItems PurchaseItem[]
+  inventory  InventoryLog[]
+
+  @@map("products")
+}
+
+model Sale {
+  id          String   @id @default(cuid())
+  invoiceNumber String @unique
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  subtotal    Float
+  taxAmount   Float
+  discountAmount Float @default(0)
+  totalAmount Float
+  paymentMethod PaymentMethod
+  status      SaleStatus @default(COMPLETED)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  items SaleItem[]
+
+  @@map("sales")
+}
+
+model SaleItem {
+  id        String   @id @default(cuid())
+  saleId    String
+  sale      Sale     @relation(fields: [saleId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Float
+  totalPrice Float
+  createdAt DateTime @default(now())
+
+  @@map("sale_items")
+}
+
+model Purchase {
+  id          String   @id @default(cuid())
+  invoiceNumber String @unique
+  supplierId  String
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  subtotal    Float
+  taxAmount   Float
+  totalAmount Float
+  status      PurchaseStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  items PurchaseItem[]
+
+  @@map("purchases")
+}
+
+model PurchaseItem {
+  id         String   @id @default(cuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  unitCost   Float
+  totalCost  Float
+  createdAt  DateTime @default(now())
+
+  @@map("purchase_items")
+}
+
+model InventoryLog {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        InventoryLogType
+  quantity    Int
+  previousStock Int
+  newStock    Int
+  reason      String?
+  createdAt   DateTime @default(now())
+
+  @@map("inventory_logs")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  MANAGER
+  STAFF
+  CASHIER
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  BANK_TRANSFER
+  MOBILE_MONEY
+  CHECK
+}
+
+enum SaleStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PurchaseStatus {
+  PENDING
+  APPROVED
+  RECEIVED
+  CANCELLED
+}
+
+enum InventoryLogType {
+  SALE
+  PURCHASE
+  ADJUSTMENT
+  RETURN
+  DAMAGED
+  EXPIRED
+}
